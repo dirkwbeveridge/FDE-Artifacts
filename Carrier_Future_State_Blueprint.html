@@ -1,0 +1,1311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Functional Blueprint: Carrier Lead Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-soft: #2a2a2a;
+    --paper: #fbfaf6;
+    --paper-tint: #f3f1ea;
+    --rule: #1a1a1a;
+    --rule-soft: #d8d4c8;
+    --green: #86bc25;
+    --green-deep: #046a38;
+    --green-tint: #e8f1d6;
+    --amber: #c98a15;
+    --muted: #6a6a6a;
+    --phase1: #046a38;
+    --phase2: #6a6a6a;
+    --phase3: #a8a8a8;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 48px 56px 120px 56px;
+  }
+  .masthead {
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 24px 0 20px 0;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 72px;
+  }
+  .mast-kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .mast-kicker .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+  }
+  .mast-title {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(42px, 5.5vw, 68px);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .mast-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--green-deep);
+  }
+  .mast-meta {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: right;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+  .mast-meta strong { color: var(--ink); font-weight: 600; }
+
+  section { margin-bottom: 96px; scroll-margin-top: 24px; }
+  .section-head {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    margin-bottom: 36px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    padding-top: 10px;
+  }
+  .section-num .label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .section-title em { font-style: italic; font-weight: 400; color: var(--green-deep); }
+  .section-body { padding-left: 120px; }
+  .lede {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 820px;
+    margin: 0 0 32px 0;
+  }
+  .lede em { font-style: italic; color: var(--green-deep); }
+
+  .callout {
+    border-left: 2px solid var(--green);
+    padding: 4px 0 4px 20px;
+    margin: 24px 0;
+    font-size: 14px;
+    color: var(--ink-soft);
+    max-width: 820px;
+  }
+  .callout .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* Section 1 — Summary */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 0 0 48px 0;
+  }
+  .summary-card { background: var(--paper); padding: 28px; }
+  .summary-card .num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .summary-card .num::before {
+    content: "";
+    width: 16px; height: 1px; background: var(--green);
+  }
+  .summary-card h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px 0;
+  }
+  .summary-card h3 em { font-style: italic; color: var(--green-deep); }
+  .summary-card p { font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+
+  .one-sentence {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(22px, 2.5vw, 30px);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 28px 0;
+    margin: 48px 0;
+    text-align: center;
+  }
+  .one-sentence strong {
+    font-weight: 600;
+    font-style: normal;
+    color: var(--green-deep);
+  }
+
+  .signal-paths {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 32px 0 16px 0;
+  }
+  .path-card {
+    border: 1px solid var(--rule-soft);
+    padding: 18px;
+    background: var(--paper);
+  }
+  .path-card .rank {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .path-card h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .path-card p { font-size: 12.5px; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+  .path-card.strong { border-top: 3px solid var(--green-deep); }
+  .path-card.strong .rank { color: var(--green-deep); font-weight: 600; }
+  .path-card.mid { border-top: 3px solid var(--amber); }
+  .path-card.weak { border-top: 3px solid var(--rule-soft); }
+
+  /* Journey */
+  .journey {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    margin-bottom: 48px;
+    overflow: hidden;
+  }
+  .journey-head {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px 28px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .journey-head .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--green);
+  }
+  .journey-head h3 {
+    font-family: "Fraunces", serif;
+    font-size: 26px;
+    font-weight: 500;
+    margin: 4px 0 0 0;
+    letter-spacing: -0.01em;
+  }
+  .journey-head .scope {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--rule-soft);
+  }
+
+  .swimlane-scroll { overflow-x: auto; }
+  .swimlane {
+    display: grid;
+    grid-template-columns: 130px repeat(7, minmax(150px, 1fr));
+    border-bottom: 1px solid var(--rule-soft);
+    min-width: 1100px;
+  }
+  .swimlane.header {
+    background: var(--paper-tint);
+    border-bottom: 1px solid var(--rule);
+  }
+  .lane-label {
+    padding: 14px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-right: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    background: var(--paper-tint);
+  }
+  .stage-cell {
+    padding: 14px 12px;
+    border-right: 1px solid var(--rule-soft);
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .stage-cell:last-child { border-right: none; }
+  .stage-cell.stage-header {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    background: var(--paper-tint);
+  }
+  .stage-cell.stage-header .num {
+    display: block;
+    color: var(--green-deep);
+    font-size: 11px;
+    margin-bottom: 3px;
+  }
+  .stage-phase {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-weight: 600;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .stage-phase.p1 { background: var(--green-tint); color: var(--phase1); }
+  .stage-phase.p2 { background: #efeee7; color: var(--phase2); }
+  .phase-legend {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin: 8px 0 24px 0;
+    letter-spacing: 0.02em;
+    max-width: 820px;
+    line-height: 1.5;
+  }
+  .phase-legend .pc {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-weight: 600;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    margin: 0 2px;
+  }
+  .phase-legend .pc.p1 { background: var(--green-tint); color: var(--phase1); }
+  .phase-legend .pc.p2 { background: #efeee7; color: var(--phase2); }
+
+  .dispatch-note {
+    border-top: 1px solid var(--rule-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    padding: 20px 0;
+    margin: 24px 0 8px 0;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    max-width: 820px;
+  }
+  .dispatch-note .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    font-weight: 600;
+    margin-right: 10px;
+  }
+  .dispatch-note strong { color: var(--ink); font-weight: 600; }
+
+  .sla-note {
+    background: var(--green-tint);
+    padding: 18px 22px;
+    margin: 24px 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 820px;
+    border-left: 3px solid var(--green-deep);
+  }
+  .sla-note .label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .sla-note strong { color: var(--ink); font-weight: 600; }
+  .lane-homeowner { background: #fdfcf7; }
+  .lane-dealer { background: #faf7ee; }
+  .lane-carrier { background: #f3f7e9; }
+  .lane-systems, .lane-rfp { background: #fafaf6; }
+  .stage-cell.systems {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+  }
+  .stage-cell.rfp {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px;
+    color: var(--green-deep);
+    font-weight: 500;
+  }
+  .stage-cell strong { color: var(--ink); font-weight: 600; }
+
+  /* Entities */
+  .entity-diagram {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin: 32px 0 48px 0;
+  }
+  .entity {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 18px 16px 14px 16px;
+    position: relative;
+  }
+  .entity .num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .entity h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 8px 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .entity p { font-size: 11.5px; color: var(--ink-soft); margin: 0; line-height: 1.45; }
+  .entity::after {
+    content: "→";
+    position: absolute;
+    right: -11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "Fraunces", serif;
+    color: var(--green-deep);
+    font-size: 18px;
+    background: var(--paper);
+    padding: 0 2px;
+    z-index: 2;
+  }
+  .entity:last-child::after { content: none; }
+
+  .backbone-key {
+    background: var(--green-tint);
+    border-left: 3px solid var(--green-deep);
+    padding: 24px 28px;
+    margin: 32px 0;
+  }
+  .backbone-key h4 {
+    font-family: "Fraunces", serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+  }
+  .backbone-key ol {
+    margin: 0;
+    padding-left: 20px;
+    columns: 2;
+    column-gap: 32px;
+  }
+  .backbone-key li {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    break-inside: avoid;
+  }
+  .backbone-key li strong { color: var(--ink); font-weight: 600; }
+
+  /* Tables */
+  table.blueprint {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 32px 0;
+    font-size: 13px;
+  }
+  table.blueprint th {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 14px;
+    color: var(--ink);
+    background: var(--paper-tint);
+    border-bottom: 2px solid var(--ink);
+    font-weight: 600;
+    vertical-align: bottom;
+  }
+  table.blueprint td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  table.blueprint td:first-child { font-weight: 500; color: var(--ink); }
+  table.blueprint td.center, table.blueprint th.center { text-align: center; }
+
+  .phase-chip {
+    display: inline-block;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .phase-chip.p1 { background: var(--green-tint); color: var(--phase1); }
+  .phase-chip.p2 { background: #efeee7; color: var(--phase2); }
+  .phase-chip.p3 { background: #f5f5f0; color: var(--phase3); }
+
+  .signal-matrix td.firing {
+    background: var(--green-tint);
+    color: var(--green-deep);
+    font-weight: 500;
+  }
+  .signal-matrix td.partial {
+    background: #fff7e4;
+    color: var(--amber);
+  }
+  .signal-matrix td.dash {
+    color: var(--rule-soft);
+    text-align: center;
+  }
+
+  .rfp-section-code {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    color: var(--green-deep);
+    font-size: 13px;
+  }
+
+  /* Open lists */
+  .open-lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 32px;
+  }
+  .open-list h4 {
+    font-family: "Fraunces", serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+  .open-list .count {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .open-list ol {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: openitem;
+  }
+  .open-list li {
+    counter-increment: openitem;
+    padding: 10px 0 10px 40px;
+    border-bottom: 1px solid var(--rule-soft);
+    position: relative;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .open-list li::before {
+    content: counter(openitem, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 10px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--green-deep);
+    font-weight: 600;
+  }
+  .open-list li strong { color: var(--ink); font-weight: 600; display: block; margin-bottom: 2px; }
+
+  .colophon {
+    border-top: 2px solid var(--ink);
+    padding-top: 24px;
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 24px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .colophon .mark {
+    font-family: "Fraunces", serif;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--green-deep);
+  }
+
+  .blueprint-footnote {
+    margin-top: 72px;
+    padding: 32px 40px;
+    background: var(--paper-tint);
+    border-left: 3px solid var(--green-deep);
+  }
+  .blueprint-footnote-inner { max-width: 900px; }
+  .blueprint-footnote-label {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .blueprint-footnote p {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 10px 0;
+  }
+  .blueprint-footnote p:last-child { margin-bottom: 0; }
+  .blueprint-footnote-meta {
+    font-size: 12px !important;
+    color: var(--muted) !important;
+    margin-top: 14px !important;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule-soft);
+    font-family: "IBM Plex Mono", monospace;
+    letter-spacing: 0.02em;
+  }
+  .blueprint-footnote-meta strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .blueprint-footnote-link {
+    color: var(--green-deep);
+    text-decoration: underline;
+    text-decoration-color: rgba(4, 106, 56, 0.3);
+    text-underline-offset: 3px;
+    font-weight: 500;
+  }
+  .blueprint-footnote-link:hover { text-decoration-color: var(--green-deep); }
+
+  .small { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .mono { font-family: "IBM Plex Mono", monospace; }
+
+  @media (max-width: 1100px) {
+    .section-body { padding-left: 0; }
+    .section-head { grid-template-columns: 1fr; gap: 8px; }
+    .entity-diagram { grid-template-columns: repeat(2, 1fr); }
+    .entity::after { content: none; }
+    .summary-grid { grid-template-columns: 1fr; }
+    .signal-paths { grid-template-columns: 1fr 1fr; }
+    .open-lists { grid-template-columns: 1fr; }
+    .backbone-key ol { columns: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <div class="mast-kicker">
+        <span class="dot"></span>
+        <span>Future State Blueprint</span>
+        <span>·</span>
+        <span>Phase 1</span>
+        <span>·</span>
+        <span>Internal Draft</span>
+      </div>
+      <h1 class="mast-title">Functional Blueprint: Carrier Lead Journey<br /><em>One system. Two doors in.</em></h1>
+    </div>
+    <div class="mast-meta">
+      <div><strong>Engagement</strong> Carrier Agentic Lead Generation</div>
+      <div><strong>Pursuit Team</strong> Deloitte</div>
+      <div><strong>Document</strong> Blueprint v1</div>
+      <div><strong>Date</strong> April 21, 2026</div>
+      <div><strong>RFP Due</strong> April 24, 2026</div>
+    </div>
+  </header>
+
+  <section id="s1">
+    <div class="section-head">
+      <div class="section-num"><span class="label">Section</span>01</div>
+      <h2 class="section-title">The <em>summary</em> — what the future state is, in one page</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">
+        Carrier's future state is <em>one Lead Lifecycle Loop</em> — a single, agentic, measurable operating model spanning every lead
+        from intake through registration and into lifetime service. Two intake patterns feed it. Four signal paths keep Carrier in
+        control of outcome data regardless of dealer cooperation.
+      </p>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="num">Journey 1</div>
+          <h3>Online <em>Inquiry</em></h3>
+          <p>Two flavors. <strong>Web Form / Chat:</strong> homeowner interacts directly with a Carrier AI agent on carrier.com — conversational chat interface in-browser that captures identity, intent, and consent. <strong>MarchEx:</strong> homeowner fills a Guided Intake Form on the dealer-locator page (no bot — structured form that captures intent before the phone number is dialed). Both create a structured Lead in Salesforce <strong>before the dealer handoff</strong>.</p>
+        </div>
+        <div class="summary-card">
+          <div class="num">Journey 2</div>
+          <h3>Customer Care <em>Call</em></h3>
+          <p>Homeowner dials 1-800-CARRIER. Voice AI answers on Carrier-controlled Five9 telephony, conducts natural qualification, <strong>applies intelligent routing</strong> (performance + proximity + availability + emergency signal) to select the best-fit dealer, warm-transfers to the dealer, and creates the structured lead in Salesforce during the call.</p>
+        </div>
+      </div>
+
+      <p class="one-sentence">
+        Carrier captures the lead. Carrier routes with context.<br />
+        The dealer delivers. <strong>Carrier captures the outcome.</strong>
+      </p>
+
+      <h3 style="font-family: Fraunces, serif; font-weight: 500; font-size: 22px; margin: 48px 0 8px 0; letter-spacing: -0.01em;">
+        How Carrier <em style="color: var(--green-deep); font-style: italic;">captures outcomes</em> — four independent signal paths
+      </h3>
+      <p class="small" style="max-width: 720px; margin-bottom: 16px;">
+        Flow-back from dealer to Carrier layers four independent signal paths, ranked by Carrier control. At every lifecycle stage, at least two fire. Carrier is never dependent on any single one. Section 2 traces each path across the full lifecycle.
+      </p>
+
+      <div class="signal-paths">
+        <div class="path-card strong">
+          <div class="rank">Signal Path 1 · Strongest Technical</div>
+          <h4>FSM Integration Telemetry</h4>
+          <p>FSM webhooks, MarchEx metadata, Five9 transcripts, Dispatch events. No dealer effort required — signal is the digital exhaust of normal work.</p>
+        </div>
+        <div class="path-card strong">
+          <div class="rank">Signal Path 2 · Most Reliable</div>
+          <h4>Homeowner-side signal</h4>
+          <p>Multi-channel homeowner engagement: SMS + email check-ins, homeowner-facing status page, post-contact satisfaction surveys, and Voice AI warm-transfer recovery on dealer miss. Cadence and channel adapt to lead score and homeowner behavior. Dealer cannot gate it. Opt-in driven; degrades gracefully without consent.</p>
+        </div>
+        <div class="path-card mid">
+          <div class="rank">Signal Path 3 · Underused</div>
+          <h4>Distributor Channel Integration</h4>
+          <p>Distributor ERP shows equipment shipped to dealer per installation. Triangulates FSM and homeowner signals. Phase 2+ leverage.</p>
+        </div>
+        <div class="path-card weak">
+          <div class="rank">Signal Path 4 · Passive (as-is today)</div>
+          <h4>Dealer-controlled disposition</h4>
+          <p>Voluntary dealer reporting in Dispatch or FSM. Kept in the mix as supplementary color. Never the source of truth.</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="tag">Phase 1 scope boundary</span>
+        This Blueprint covers Phase 1 only: Online Inquiry + Customer Care Call, with the Lead Lifecycle Loop running end-to-end. Connected Portal telemetry (Phase 2), Retail Partner leads (Phase 2), and Dealer Proposal Tool integration (Phase 3) extend this pattern but are not outlined in this report.
+      </div>
+    </div>
+  </section>
+
+  <section id="s2">
+    <div class="section-head">
+      <div class="section-num"><span class="label">Section</span>02</div>
+      <h2 class="section-title">Two <em>journey maps</em> — the future state, end-to-end</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">
+        Each pattern traced across seven lifecycle stages, three persona lanes, the systems involved, and the RFP section each stage addresses. Post-handoff, both patterns converge — same routing logic, same signal paths, same attribution loop.
+      </p>
+
+      <p class="phase-legend">
+        Stage headers labeled by delivery phase. Stages 01–05 deliver in Phase 1 <span class="pc p1">P1</span>. Stages 06–07 (Registration, Lifetime) are Phase 2 <span class="pc p2">P2</span> — shown to frame the full Lifecycle Loop, not promised as Day 1 deliverables.
+      </p>
+
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <div class="label">Journey 1</div>
+            <h3>Online Inquiry · Web Form / Chat · MarchEx via Guided Intake Form</h3>
+          </div>
+          <div class="scope">Phase 1 · §2.1 §2.2 §2.3 §2.4 §2.5 §2.6</div>
+        </div>
+
+        <div class="swimlane-scroll">
+          <div class="swimlane header">
+            <div class="lane-label">Stage</div>
+            <div class="stage-cell stage-header"><span class="num">01</span>Intake<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">02</span>Qualification<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">03</span>Routing<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">04</span>Engagement<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">05</span>Sale<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">06</span>Registration<span class="stage-phase p2">P2</span></div>
+            <div class="stage-cell stage-header"><span class="num">07</span>Lifetime<span class="stage-phase p2">P2</span></div>
+          </div>
+
+          <div class="swimlane lane-homeowner">
+            <div class="lane-label">Homeowner</div>
+            <div class="stage-cell">Web / Chat: converses with Carrier AI agent on carrier.com. MarchEx: fills Guided Intake Form on dealer-locator page before the phone number is dialed.</div>
+            <div class="stage-cell">Receives confirmation of expected response window. Consent captured for follow-up SMS / email.</div>
+            <div class="stage-cell">No action. Background routing invisible to homeowner.</div>
+            <div class="stage-cell">Dealer contact arrives within SLA. T+2h SMS + email check-in with link to a homeowner-facing status page (current dealer, response countdown, <em>"something not right?"</em> self-service recovery). Homeowner signals yes / no.</div>
+            <div class="stage-cell">In-home consultation, proposal, decision. Carrier sends T+72h satisfaction check-in.</div>
+            <div class="stage-cell">Post-install link from Carrier with Lead ID pre-filled. One-tap registration.</div>
+            <div class="stage-cell">Ongoing relationship — service reminders, warranty status, replacement-cycle touchpoints.</div>
+          </div>
+
+          <div class="swimlane lane-carrier">
+            <div class="lane-label">Carrier</div>
+            <div class="stage-cell"><strong>Structured Lead created in Salesforce.</strong> Intake agent generates Lead ID. Identity resolution runs against cross-channel history. Abandoned Guided Intake Forms trigger a resume-link follow-up within 24 hours.</div>
+            <div class="stage-cell">Qualification &amp; scoring agents enrich the Lead. Score + rationale stored. Duplicate / spam filtering.</div>
+            <div class="stage-cell">Routing agent selects dealer on performance + proximity + availability + emergency signal. SLA clock armed on Carrier side.</div>
+            <div class="stage-cell"><strong>Signal Path 1</strong> captures FSM webhooks. <strong>Signal Path 2</strong> sends homeowner SMS + email. On SLA breach, <strong>intent-matched re-route</strong> selects next dealer against the captured intent, and an optional Voice AI callback warm-introduces the secondary dealer in a live handoff. No generic outbound voice marketing in Phase 1.</div>
+            <div class="stage-cell">Sale Record created in Salesforce — thin attribution bridge. References dealer's FSM Job ID.</div>
+            <div class="stage-cell"><strong>Tier 1 deterministic match</strong>: Lead ID on PHDB record links Lead → Product Instance. Attribution loop closes.</div>
+            <div class="stage-cell">Lifetime Events roll up to Product Instance → Lead → Homeowner. LTV calculable by source, channel, dealer cohort.</div>
+          </div>
+
+          <div class="swimlane lane-dealer">
+            <div class="lane-label">Dealer</div>
+            <div class="stage-cell">No action. Dealer not yet involved.</div>
+            <div class="stage-cell">No action.</div>
+            <div class="stage-cell">Receives enriched lead in Dispatch → FSM. Pre-populated with intent, transcript, urgency, score, prior interactions.</div>
+            <div class="stage-cell">Contacts homeowner using normal workflow. FSM logs call &amp; appointment automatically.</div>
+            <div class="stage-cell">Dealer runs their normal sale process in their FSM. Job and invoice records flow to Carrier via webhook.</div>
+            <div class="stage-cell">Dealer-assisted PHDB registration pre-fills Lead ID from FSM record — no extra step.</div>
+            <div class="stage-cell">Service events logged in FSM and ServiceBench — carry Lead ID via Product Instance linkage.</div>
+          </div>
+
+          <div class="swimlane lane-systems">
+            <div class="lane-label">Systems</div>
+            <div class="stage-cell systems">Carrier.com · Intake Agent · Salesforce · Dispatch · MarchEx (metadata only)</div>
+            <div class="stage-cell systems">Salesforce · Identity Resolution · Scoring engine</div>
+            <div class="stage-cell systems">Dispatch · Routing engine · Dealer FSM (ServiceTitan / HCP / FieldEdge)</div>
+            <div class="stage-cell systems">FSM webhooks · SMS gateway · Salesforce · Dispatch SLA monitor</div>
+            <div class="stage-cell systems">FSM · Salesforce (Sale Record) · QuickBooks (dealer-side)</div>
+            <div class="stage-cell systems">PHDB · Carrier.com registration · FSM</div>
+            <div class="stage-cell systems">PHDB · ServiceBench · FSM · Distributor ERP</div>
+          </div>
+
+          <div class="swimlane lane-rfp">
+            <div class="lane-label">RFP §</div>
+            <div class="stage-cell rfp">§2.1 · §2.7</div>
+            <div class="stage-cell rfp">§2.2 · §2.3</div>
+            <div class="stage-cell rfp">§2.4 · §4.1</div>
+            <div class="stage-cell rfp">§2.5 · §2.6 · §5.2</div>
+            <div class="stage-cell rfp">§2.7 · §4.3</div>
+            <div class="stage-cell rfp">§2.7 (P2 Tier 1)</div>
+            <div class="stage-cell rfp">§2.7 · §4.3 (P2+)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <div class="label">Journey 2</div>
+            <h3>Customer Care Call · 1-800-CARRIER · Voice AI on Five9</h3>
+          </div>
+          <div class="scope">Phase 1 · §2.1 §2.2 §2.4 §2.5 §2.6 §2.9</div>
+        </div>
+
+        <div class="swimlane-scroll">
+          <div class="swimlane header">
+            <div class="lane-label">Stage</div>
+            <div class="stage-cell stage-header"><span class="num">01</span>Intake<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">02</span>Qualification<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">03</span>Routing<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">04</span>Engagement<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">05</span>Sale<span class="stage-phase p1">P1</span></div>
+            <div class="stage-cell stage-header"><span class="num">06</span>Registration<span class="stage-phase p2">P2</span></div>
+            <div class="stage-cell stage-header"><span class="num">07</span>Lifetime<span class="stage-phase p2">P2</span></div>
+          </div>
+
+          <div class="swimlane lane-homeowner">
+            <div class="lane-label">Homeowner</div>
+            <div class="stage-cell">Dials 1-800-CARRIER. Voice AI answers immediately — no queue, no menu. Opens with <em>"How can I help?"</em> and detects intent — sales inquiry, existing service, warranty, other. Lead-bearing conversations continue with AI qualification; non-lead calls route to the existing Customer Care team.</div>
+            <div class="stage-cell">Describes situation. AI captures identity, intent, urgency, scheduling preference in-call.</div>
+            <div class="stage-cell">AI commits in-call: <em>"I've found a dealer 12 minutes from you. They'll call you within 2 hours."</em></div>
+            <div class="stage-cell">Optional warm transfer. T+0 confirmation SMS with tracking reference. T+SLA check-in.</div>
+            <div class="stage-cell">In-home consultation, proposal, decision. Satisfaction check-in at T+72h.</div>
+            <div class="stage-cell">Post-install link with Lead ID pre-filled. Same pattern as Online Inquiry.</div>
+            <div class="stage-cell">Ongoing relationship — same as Online Inquiry.</div>
+          </div>
+
+          <div class="swimlane lane-carrier">
+            <div class="lane-label">Carrier</div>
+            <div class="stage-cell">Voice AI on Five9. <strong>Intent detection runs first</strong> — lead vs. existing customer service vs. warranty vs. other. For lead intents: structured Salesforce Lead created mid-call, transcript streaming. For non-lead intents: seamless handoff to Customer Care team with context preserved.</div>
+            <div class="stage-cell">Transcription NLP extracts intent. Identity resolution against prior web / MarchEx / 1-800 activity. Scoring.</div>
+            <div class="stage-cell"><strong>Intelligent routing</strong>: performance + proximity + availability + emergency signal. AI makes in-call commitment — Carrier accountable to it.</div>
+            <div class="stage-cell"><strong>Signal Path 1</strong> FSM events + <strong>Signal Path 2</strong> homeowner SMS + email + <strong>Signal Path 4</strong> passive dealer disposition. On SLA breach, <strong>intent-matched re-route</strong> selects next dealer against the captured intent; optional Voice AI callback warm-introduces the secondary dealer in a live handoff.</div>
+            <div class="stage-cell">Sale Record created. References dealer's FSM Job ID. Same as Online Inquiry.</div>
+            <div class="stage-cell">Same as Online Inquiry. Tier 1 deterministic match on Lead ID.</div>
+            <div class="stage-cell">Same as Online Inquiry.</div>
+          </div>
+
+          <div class="swimlane lane-dealer">
+            <div class="lane-label">Dealer</div>
+            <div class="stage-cell">No action.</div>
+            <div class="stage-cell">No action.</div>
+            <div class="stage-cell">Receives warm transfer (live) OR enriched lead in FSM (cold) with full transcript, intent, urgency tag.</div>
+            <div class="stage-cell">Contacts / continues conversation. FSM logs call &amp; appointment automatically.</div>
+            <div class="stage-cell">Dealer runs their sale in their FSM. Same as Online Inquiry.</div>
+            <div class="stage-cell">Same as Online Inquiry.</div>
+            <div class="stage-cell">Same as Online Inquiry.</div>
+          </div>
+
+          <div class="swimlane lane-systems">
+            <div class="lane-label">Systems</div>
+            <div class="stage-cell systems">Five9 · Voice AI · Salesforce</div>
+            <div class="stage-cell systems">Transcription NLP · Salesforce · Scoring engine</div>
+            <div class="stage-cell systems">Routing engine · Dispatch · Dealer FSM · Five9 (warm transfer)</div>
+            <div class="stage-cell systems">FSM webhooks · SMS gateway · Salesforce · SLA monitor</div>
+            <div class="stage-cell systems">Same as Online Inquiry</div>
+            <div class="stage-cell systems">Same as Online Inquiry</div>
+            <div class="stage-cell systems">Same as Online Inquiry</div>
+          </div>
+
+          <div class="swimlane lane-rfp">
+            <div class="lane-label">RFP §</div>
+            <div class="stage-cell rfp">§2.1 · §5.2</div>
+            <div class="stage-cell rfp">§2.2 · §2.3 · §2.9</div>
+            <div class="stage-cell rfp">§2.4 · §4.1</div>
+            <div class="stage-cell rfp">§2.5 · §2.6</div>
+            <div class="stage-cell rfp">§2.7 · §4.3</div>
+            <div class="stage-cell rfp">§2.7 (P2)</div>
+            <div class="stage-cell rfp">§2.7 (P2+)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="tag">Convergence point</span>
+        From Stage 04 (Engagement) onward, both patterns execute identically. The intake surface differs; the Lifecycle Loop does not. This is the consolidation argument — <strong>one system, two doors in</strong>.
+      </div>
+
+      <div class="callout">
+        <span class="tag">After-hours behavior</span>
+        Intake runs 24/7 — Voice AI answers, Guided Intake Form captures, identity and scoring operate normally. Routing branches: when no dealer is routable (after-hours, weekends, peak queue), the homeowner gets an immediate acknowledgment with a next-business-day SLA and tracked reference. When dealers come online the next morning, queued leads trigger active re-engagement — not passive wait. Priority is time-of-capture + urgency score; no-heat in January clears the queue.
+      </div>
+    </div>
+  </section>
+
+  <section id="s3">
+    <div class="section-head">
+      <div class="section-num"><span class="label">Section</span>03</div>
+      <h2 class="section-title">The <em>signal path matrix</em> — how Carrier never loses visibility</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">
+        Six lifecycle stages × four signal paths. <strong>At every stage from first contact onward, at least two paths fire independently.</strong> The only exception is dealer acknowledgment, which is structurally a single-system event. The dealer's reporting discipline determines how rich Signal Path 4 is. It does not determine whether Carrier sees the outcome.
+      </p>
+
+      <table class="blueprint signal-matrix">
+        <thead>
+          <tr>
+            <th style="width: 22%">Lifecycle stage</th>
+            <th class="center">Signal Path 1 · FSM Integration Telemetry</th>
+            <th class="center">Signal Path 2 · Homeowner signal</th>
+            <th class="center">Signal Path 3 · Distributor Channel Integration</th>
+            <th class="center">Signal Path 4 · Dealer disposition <span style="font-weight: 400; text-transform: none; letter-spacing: 0;">(as-is today)</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lead acknowledged by dealer</td>
+            <td class="firing">Dispatch ack · FSM receipt webhook</td>
+            <td class="dash">—</td>
+            <td class="dash">—</td>
+            <td class="partial">Dealer clicks "accept"</td>
+          </tr>
+          <tr>
+            <td>Dealer contacted homeowner</td>
+            <td class="firing">FSM call log · Activity event</td>
+            <td class="firing">SMS: "has your dealer called?"</td>
+            <td class="dash">—</td>
+            <td class="partial">Dealer logs first touch</td>
+          </tr>
+          <tr>
+            <td>Appointment booked</td>
+            <td class="firing">FSM calendar event</td>
+            <td class="firing">SMS / email confirmation</td>
+            <td class="dash">—</td>
+            <td class="partial">Dealer-disposition field</td>
+          </tr>
+          <tr>
+            <td>Job completed</td>
+            <td class="firing">FSM job status + invoice</td>
+            <td class="firing">Post-job NPS check-in</td>
+            <td class="firing">Distributor: equipment shipped</td>
+            <td class="partial">Dealer logs disposition</td>
+          </tr>
+          <tr>
+            <td>Outcome (won/lost + reason)</td>
+            <td class="firing">FSM status + notes</td>
+            <td class="firing">NPS: "did you buy? why/not?"</td>
+            <td class="firing">Distributor ERP confirms install</td>
+            <td class="partial">Dealer loss-reason field</td>
+          </tr>
+          <tr>
+            <td>Product registered <span class="mono" style="color: var(--muted); font-size: 10px;">(P2)</span></td>
+            <td class="firing">FSM registration event</td>
+            <td class="firing">Homeowner self-register w/ Lead ID</td>
+            <td class="firing">Distributor serial → install match</td>
+            <td class="partial">Dealer-assisted PHDB submit</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="tag">The principle</span>
+        Green cells fire without dealer cooperation. Amber cells depend on voluntary dealer action. <strong>From dealer-contact onward, every row has at least two green cells</strong> — if Signal Path 4 is silent, the outcome is still captured. Acknowledgment is the one row that relies on a single strong signal (Dispatch / FSM receipt), which is itself automated and does not require dealer effort. If Signal Path 2 is silent (homeowner didn't opt in or didn't respond), Signal Paths 1 and 3 carry the load.
+      </div>
+    </div>
+  </section>
+
+  <section id="s4">
+    <div class="section-head">
+      <div class="section-num"><span class="label">Section</span>04</div>
+      <h2 class="section-title">Data model with <em>traceable attributes end-to-end</em> enable Revenue Attribution objectives</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">
+        Attribution works because six backbone attributes persist end-to-end. Every entity inherits from the one before it and adds new attributes. For every lead generated under this program, a service event several years in the future traces cleanly back to the originating Lead — by Serial Number → Lead ID → Homeowner. Historical traceability on Carrier's existing customer base depends on a data modeling and cleansing workstream scoped in the shaping sprint.
+      </p>
+
+      <div class="dispatch-note">
+        <span class="label">Salesforce System of Record</span>
+        Carrier's Salesforce instance is the Day 1 system of record for lead data, lifecycle states, and reporting. <strong>This Blueprint is designed to build on top of Salesforce — not replace it, not duplicate its data, not substitute a vendor CRM.</strong> Every Lead, Engagement, Sale Record, and reporting surface resolves to Salesforce.
+      </div>
+
+      <div class="dispatch-note">
+        <span class="label">On Dispatch</span>
+        Carrier has confirmed Dispatch as the Day 1 lead routing platform and opened the door (Q&amp;A Q16) to eventually replacing it if the vendor's solution provides equivalent capability. <strong>Our Phase 1 position: integrate with Dispatch as-is, do not expand its role, keep the architecture open.</strong> Routing logic, SLA management, and disposition tracking live in the Carrier-owned decisioning layer (Salesforce-native) — not in Dispatch. This preserves Carrier's option to retire Dispatch in Phase 2+ without re-architecting the solution.
+      </div>
+
+      <div class="entity-diagram">
+        <div class="entity">
+          <div class="num">01 · Persistent</div>
+          <h4>Homeowner</h4>
+          <p>The person. Persists across every Lead, Sale, and Lifetime Event.</p>
+        </div>
+        <div class="entity">
+          <div class="num">02 · Event</div>
+          <h4>Lead</h4>
+          <p>A single intent event. One Homeowner has many Leads over time.</p>
+        </div>
+        <div class="entity">
+          <div class="num">03 · Process</div>
+          <h4>Engagement</h4>
+          <p>Everything from lead routed through appointment completed.</p>
+        </div>
+        <div class="entity">
+          <div class="num">04 · Bridge</div>
+          <h4>Sale Record</h4>
+          <p>Thin Carrier-side object. References dealer's FSM Job ID.</p>
+        </div>
+        <div class="entity">
+          <div class="num">05 · Unit</div>
+          <h4>Product Instance</h4>
+          <p>The installed equipment. PHDB serial record. Attribution closes here.</p>
+        </div>
+        <div class="entity">
+          <div class="num">06 · Ongoing</div>
+          <h4>Lifetime Events</h4>
+          <p>Service, parts, warranty, replacement. 15+ years of linked signal.</p>
+        </div>
+      </div>
+
+      <div class="backbone-key">
+        <h4>The six backbone attributes — what must persist end-to-end</h4>
+        <ol>
+          <li><strong>Homeowner ID</strong> Carrier-generated, persistent identity stitched across all channels.</li>
+          <li><strong>Lead ID</strong> The attribution key. Carried on every routing payload, FSM record, PHDB registration.</li>
+          <li><strong>Serial Number</strong> PHDB record. Ties every Lifetime Event back to its originating Lead.</li>
+          <li><strong>Dealer ID</strong> Canonical across Dispatch, MarchEx, Salesforce, FSM, ServiceBench, Distributor ERP.</li>
+          <li><strong>Source / Channel</strong> Set at intake. Never modified. The marketing attribution dimension.</li>
+          <li><strong>Timestamp fidelity</strong> Every event precise and ordered. Attribution logic depends on sequencing.</li>
+        </ol>
+      </div>
+
+      <h3 style="font-family: Fraunces, serif; font-weight: 500; font-size: 22px; margin: 48px 0 8px 0;">
+        Key attributes by entity <em style="font-style: italic; color: var(--green-deep);">— phased and RFP-traced</em>
+      </h3>
+
+      <table class="blueprint">
+        <thead>
+          <tr>
+            <th style="width: 12%">Entity</th>
+            <th style="width: 40%">Representative attributes</th>
+            <th style="width: 12%" class="center">Phase</th>
+            <th style="width: 36%">RFP support &amp; notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Homeowner</td>
+            <td>ID · name · phone · email · address · consent flags · identity resolution confidence · household relationships</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+            <td>§2.7 cross-channel identity. Consent is a structured attribute — new ask for Carrier.</td>
+          </tr>
+          <tr>
+            <td>Lead</td>
+            <td>Lead ID · source · sub-source · channel · intake TS · transcript/form data · intent · urgency · equipment of interest · score + rationale · identity resolution result · cross-channel history ref</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+            <td>§2.1 intake · §2.2 qualification · §2.3 scoring · §2.9 guardrails (score rationale + confidence)</td>
+          </tr>
+          <tr>
+            <td>Engagement</td>
+            <td>Routing rationale · SLA clock · re-routes · acknowledgment TS · first contact TS · appointment TS · FSM call log · homeowner SMS responses · outcome + source + loss reason</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+            <td>§2.4 routing · §2.5 recovery · §2.6 after-hours · §5.2 latency</td>
+          </tr>
+          <tr>
+            <td>Sale Record</td>
+            <td>Sale Record ID · linked Lead ID · linked Dealer ID · <strong>linked FSM Job ID (external ref)</strong> · FSM platform · outcome · financial summary · installation complete date</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+            <td>§2.7 outcome tracking · §4.3 reporting. Thin Salesforce object — does not replicate dealer transaction system.</td>
+          </tr>
+          <tr>
+            <td>Product Instance</td>
+            <td>Serial number · model · installed date · installation address · <strong>originating Lead ID (Tier 1)</strong> · matching tier used · match confidence · warranty tier &amp; expiration</td>
+            <td class="center"><span class="phase-chip p2">P2</span></td>
+            <td>§2.7 lead-to-registration matching. Requires Lead ID field added to PHDB — Carrier-side commitment.</td>
+          </tr>
+          <tr>
+            <td>Lifetime Events</td>
+            <td>Service events · parts orders · warranty claims · maintenance contract status · replacement events · all linked to Serial → Lead ID</td>
+            <td class="center"><span class="phase-chip p2">P2</span></td>
+            <td>§2.7 revenue attribution across service, parts, replacement. LTV by source. CFO-level value.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="tag">Identity resolution — fully automated, no human queue</span>
+        Confidence thresholds: <span class="mono">≥ 0.60</span> auto-link to existing Homeowner · <span class="mono">0.40–0.59</span> create new ID with probable-duplicate marker that auto-merges on future signal · <span class="mono">&lt; 0.40</span> create new ID. Conservative default — cost of an incorrect merge exceeds cost of a missed merge. Zero manual operations.
+      </div>
+
+      <div class="sla-note">
+        <span class="label">On SLAs — illustrative, Carrier-configurable</span>
+        Dealer-contact SLAs are not defined in Carrier's current operating model. This Blueprint uses a <strong>2-hour default dealer-response SLA</strong> for illustrative purposes — the number is Carrier-configurable, stage-specific (acknowledgment vs. first contact vs. appointment), score-adjusted (high-value leads may get tighter SLAs), and can vary by dealer tier (FAD Presidents Award dealers may opt into tighter SLAs as a differentiator). Establishing baseline SLAs against Carrier's actual response-time data is a shaping-sprint workstream.
+      </div>
+    </div>
+  </section>
+
+  <section id="s5">
+    <div class="section-head">
+      <div class="section-num"><span class="label">Section</span>05</div>
+      <h2 class="section-title">RFP <em>requirement coverage</em> — proof it meets §2</h2>
+    </div>
+    <div class="section-body">
+      <p class="lede">
+        Every functional requirement traced to journey stage, supporting data attributes, and delivery phase. The table is the defense when Carrier asks: <em>does this meet the RFP?</em>
+      </p>
+
+      <div class="callout" style="margin-bottom: 32px;">
+        <span class="tag">Scope of this matrix</span>
+        This is a <strong>high-level mapping</strong> — one row per requirement, traced to the Blueprint artifacts that support it. The detailed response to each §2 / §4 / §5 requirement (narrative, evidence, capability depth, delivery specifics) is written in the RFP Excel response workbook. This matrix exists to prove coverage completeness and to orient the team; the Excel is what Carrier evaluates.
+      </div>
+
+      <table class="blueprint">
+        <thead>
+          <tr>
+            <th style="width: 10%">RFP §</th>
+            <th style="width: 22%">Requirement</th>
+            <th style="width: 28%">Where it lives in the journey</th>
+            <th style="width: 25%">Data attributes supporting it</th>
+            <th style="width: 8%" class="center">Phase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rfp-section-code">§2.1</td>
+            <td>Lead Intake &amp; Automatic Creation — real-time, no manual steps, dedup at intake</td>
+            <td>Stage 01 on both patterns. Intake agent creates structured Lead during the interaction.</td>
+            <td>Lead ID · source · sub-source · channel · intake TS · identity resolution</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.2</td>
+            <td>Lead Qualification &amp; Enrichment — autonomous, multi-signal</td>
+            <td>Stage 02. Transcript NLP, form data, cross-channel history, equipment context.</td>
+            <td>Intent · urgency · equipment of interest · transcript · extracted summary · cross-channel ref</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.3</td>
+            <td>Lead Scoring &amp; Dynamic Prioritization — AI-based, not rule-only</td>
+            <td>Stage 02. Score with qualitative rationale. Updates as new data arrives.</td>
+            <td>Lead score · score-component breakdown · rationale · estimated revenue potential</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.4</td>
+            <td>Dealer Routing &amp; Assignment — real-time, performance-aware</td>
+            <td>Stage 03. Performance + proximity + availability + emergency signal + <strong>captured intent match</strong> (language, equipment class, urgency, emergency-capability). Carrier-configurable.</td>
+            <td>Routing rationale · routing logic version · dealer ID · SLA clock · re-routes · intent-match attributes</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.5</td>
+            <td>Autonomous Re-engagement &amp; Lead Recovery — triggered, rule-configurable</td>
+            <td>Stage 04. SLA breach triggers <strong>intent-matched re-route</strong>. Signal Path 2 homeowner SMS + email. Voice AI warm-transfer callback on missed contact. <strong>Phase 1 outbound channels to homeowners: SMS, email, and purpose-bound Voice AI callback (warm transfer, SLA recovery). Outbound voice to dealers is deferred per Carrier Q&amp;A Q15.</strong></td>
+            <td>SLA breach TS · re-route events · homeowner SMS + email responses · warm-transfer callback state · recovery flow state</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.6</td>
+            <td>After-Hours Lead Handling &amp; Scheduling — autonomous</td>
+            <td>Stages 01–04. AI-agent intake works 24/7. After-hours calls captured and queued per routing rules.</td>
+            <td>Intake TS · after-hours flag · scheduling preference · auto-queue state</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.7</td>
+            <td>Outcome Tracking &amp; Revenue Attribution — lifecycle + registration match</td>
+            <td>Stages 04–07. Sale Record captures outcome. Product Instance + Lifetime Events close the loop.</td>
+            <td>Outcome + source · Lead ID persistence · Serial + tier + confidence · Lifetime Event linkage</td>
+            <td class="center"><span class="phase-chip p1">P1</span> <span class="phase-chip p2">P2</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.8</td>
+            <td>Dealer Platform Integrations — 8 FSM platforms</td>
+            <td>Stages 03–07. ServiceTitan · HCP · FieldEdge in P2. Long-tail five in P3.</td>
+            <td>FSM platform · FSM Job ID · custom-field support for Lead ID</td>
+            <td class="center"><span class="phase-chip p2">P2</span> <span class="phase-chip p3">P3</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§2.9</td>
+            <td>Data Governance &amp; AI Safeguards — guardrails, confidence, human fallback</td>
+            <td>All stages. Eval infrastructure monitors confidence, drift, hallucination. Low-confidence → human.</td>
+            <td>Confidence score · fallback flag · data classification · consent · decision audit trail</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§4.1</td>
+            <td>Autonomy &amp; Decision Execution — executes, does not recommend</td>
+            <td>Stages 01–05. No human-in-the-loop for standard operations. Identity resolution fully automated.</td>
+            <td>Decision audit trail · autonomy tier · Carrier-configurable rules</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§4.3</td>
+            <td>Observability, Reporting &amp; Analytics — self-service</td>
+            <td>Stages 05–07. <strong>Six funnel metrics delivered Phase 1:</strong> intake volume by source, dealer acceptance rate, lead disposition distribution, dealer-reported revenue where available, cycle time (intake → contact → appointment → completion), and end-to-end lead visibility. Phase 1 commits to <strong>≥ 50% end-to-end visibility</strong> by end of year, per Carrier Q&amp;A Q4.</td>
+            <td>All lifecycle attributes exposed via self-service. Match-tier breakdowns. Confidence-weighted aggregates.</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+          <tr>
+            <td class="rfp-section-code">§5.2</td>
+            <td>Latency — real-time decisioning at volume</td>
+            <td>Stages 01–03. Intake &lt; 5s · qualification &lt; 5s (form) / &lt; 10s (call) · routing &lt; 10s · re-route &lt; 30s.</td>
+            <td>Every event timestamped. Latency measured per stage, per decision.</td>
+            <td class="center"><span class="phase-chip p1">P1</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="tag">The defense</span>
+        When Carrier asks <em>"does this meet §2?"</em>, this table is the answer. Every requirement ties to a stage, a set of data attributes, and a delivery phase. Phase 1 covers all pass/fail criteria. Phase 2+ covers scored differentiators.
+      </div>
+    </div>
+  </section>
+
+  <div class="blueprint-footnote">
+    <div class="blueprint-footnote-inner">
+      <div class="blueprint-footnote-label">How the Blueprint stays current</div>
+      <p>
+        This is a living document — the single source of truth for the pursuit team. As Carrier responds to asks, decisions land, or
+        design details sharpen, updates go directly into the relevant section (Summary, Journey Maps, Data Model, Signal Path Matrix,
+        or RFP Coverage). No parallel documents, no orphan artifacts.
+      </p>
+      <p class="blueprint-footnote-meta">
+        <strong>Team reference &amp; updates:</strong>
+        <a href="[CLAUDE-URL-PLACEHOLDER]" class="blueprint-footnote-link">[insert Claude conversation URL]</a>
+        · Internal asks &amp; pursuit-team decisions tracked separately
+      </p>
+    </div>
+  </div>
+
+  <footer class="colophon">
+    <div>
+      <div>Deloitte · Carrier Agentic Lead Generation Pursuit · Internal Draft</div>
+      <div>Blueprint v1 · April 21, 2026 · Phase 1 Scope</div>
+    </div>
+    <div class="mark">Together makes progress.</div>
+  </footer>
+
+</div>
+</body>
+</html>
